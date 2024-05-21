@@ -60,6 +60,9 @@ let
           "browser.tabs.drawInTitlebar" = false;
           "browser.tabs.inTitlebar" = 0;
           "browser.contentblocking.category" = "strict";
+          "browser.link.open_newwindow" = 3;
+          "browser.link.open_newwindow.restriction" = 1;
+          "browser.link.open_newwindow.override.external" = 2;
           "network.cookie.lifetimePolicy" = 0;
           "layout.css.prefers-color-scheme.content-override" = getAttr cfg.theme {
             dark = 0;
