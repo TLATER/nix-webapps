@@ -18,6 +18,7 @@
         ./imports/formatter.nix
         ./imports/pkgs-by-name.nix
         ./imports/lib.nix
+        ./imports/homeManagerModules.nix
       ];
     };
 }
