@@ -18,7 +18,7 @@ Low-effort web "apps" with nix!
 
    ```nix
    nixpkgs.overlays = [
-     inputs.nix-webapps.overlays.default
+     inputs.nix-webapps.overlays.lib
    ];
    ```
 
@@ -27,7 +27,7 @@ Low-effort web "apps" with nix!
    ```nix
    environment.systemPackages = [
      pkgs.nix-webapps.electron
-     (pkgs.nix-webapps.lib.mkChromiumApp {
+     (pkgs.nix-webapps-lib.mkChromiumApp {
        appName = "teams";
        desktopName = "Microsoft Teams";
        icon = ./Microsoft_Office_Teams.svg;

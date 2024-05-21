@@ -17,7 +17,7 @@
         ./imports/overlay.nix
         ./imports/formatter.nix
         ./imports/pkgs-by-name.nix
-        ./imports/pkgs-all.nix
+        ./imports/lib.nix
       ];
     };
 }
