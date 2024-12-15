@@ -14,7 +14,7 @@
               buildInputs = [ prev.chromium ];
 
               nativeBuildInputs = [
-                prev.makeBinaryWrapper
+                prev.makeShellWrapper
                 prev.copyDesktopItems
               ];
 
