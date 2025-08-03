@@ -4,7 +4,7 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs =
-    { self, nixpkgs, ... }:
+    { self, nixpkgs, ... }@inputs:
     {
       overlays = {
         default = final: prev: {
@@ -19,12 +19,9 @@
         lib = self.overlays.default;
       };
 
-      packages.x86_64-linux.firefox-discord =
-        (self.overlays.default nixpkgs.legacyPackages.x86_64-linux nixpkgs.legacyPackages.x86_64-linux)
-        .nix-webapp-lib.mkFirefoxApp
-          {
-            name = "discord";
-            url = "https://discord.com/app";
-          };
+      checks.x86_64-linux = import ./checks {
+        inherit inputs;
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      };
     };
 }

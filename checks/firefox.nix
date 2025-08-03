@@ -1,0 +1,45 @@
+{ inputs, pkgs }:
+let
+  inherit (inputs.self.overlays.default pkgs pkgs) nix-webapp-lib;
+
+  testPage = pkgs.writeText "test.html" ''
+    <html>
+      <head>
+        <title>Test Webapp</title>
+      </head>
+      <body>
+        <h1>Hello World!</h1>
+      </body>
+    </html>
+  '';
+in
+{
+  firefox =
+    let
+      webapp = nix-webapp-lib.mkFirefoxApp {
+        url = "file://${testPage}";
+        name = "webapp";
+      };
+    in
+    pkgs.testers.runNixOSTest {
+      name = "run-firefox-webapp";
+      nodes.machine.imports = [ "${inputs.nixpkgs}/nixos/tests/common/x11.nix" ];
+      enableOCR = true;
+
+      testScript = ''
+        machine.wait_for_x()
+        machine.execute("xterm -e '${pkgs.lib.getExe webapp}; sleep 20' >&2 &")
+        machine.wait_for_window("Test Webapp", 20)
+        machine.screenshot("webapp")
+
+        # If the window is rendered with the browser bar visible,
+        # `test.htm` will be part of the url and therefore visible
+        # on-screen. Hence, this is a pretty good way to ensure the
+        # UI-hiding features are working.
+        #
+        # We avoid including the `l` of `html`, because it may be read
+        # as a 1 by the OCR.
+        assert "test.htm" not in machine.get_screen_text_variants()[0]
+      '';
+    };
+}
