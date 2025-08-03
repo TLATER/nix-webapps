@@ -3,18 +3,24 @@ pkgs:
   url,
   name,
   prefs ? { },
+  extensions ? [ ],
   extraArgs ? [ ],
   makeDesktopItemArgs ? { },
   firefoxBin ? pkgs.lib.getExe pkgs.firefox,
 }:
 
 let
-  prefsFile = pkgs.writeText "firefox-webapp-profile-${name}-prefs.js" (
-    "\n"
-    + pkgs.lib.concatMapAttrsStringSep "\n" (
-      pref: val: "user_pref(\"${pref}\", ${builtins.toJSON val}); "
-    ) prefs
-  );
+  prefsFile =
+    let
+      prefs' =
+        prefs // pkgs.lib.optionalAttrs (extensions != [ ]) { "extensions.autoDisableScopes" = 0; };
+    in
+    pkgs.writeText "firefox-webapp-profile-${name}-prefs.js" (
+      "\n"
+      + pkgs.lib.concatMapAttrsStringSep "\n" (
+        pref: val: "user_pref(\"${pref}\", ${builtins.toJSON val}); "
+      ) prefs'
+    );
 
   combinedPrefs = pkgs.concatTextFile {
     name = "firefox-webapp-profile-${name}-combined-prefs";
@@ -25,11 +31,25 @@ let
     destination = "/user.js";
   };
 
+  combinedExtensions =
+    let
+      # This extension prefix is shared among all Firefox extension
+      # packages; comments in the home-manager Firefox module suggest
+      # this may change.
+      extensionPrefix = "share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
+    in
+    pkgs.buildEnv {
+      name = "firefox-webapp-extensions-${name}";
+      paths = map (ex: "${ex}/${extensionPrefix}") extensions;
+      extraPrefix = "/extensions";
+    };
+
   profile = pkgs.buildEnv {
     name = "firefox-webapp-profile-${name}";
     paths = [
       combinedPrefs
       "${pkgs.quick-webapps.src}/data/runtime/firefox/profile"
+      combinedExtensions
     ];
     ignoreCollisions = true;
   };
@@ -74,4 +94,6 @@ pkgs.buildEnv {
   ];
 
   meta.mainProgram = name;
+
+  passthru = { inherit profile; };
 }

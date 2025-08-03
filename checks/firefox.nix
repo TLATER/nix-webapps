@@ -64,4 +64,32 @@ in
         machine.succeed("grep app.shield.optoutstudies.enabled ~/.local/share/firefox-webapps/webapp/user.js")
       '';
     };
+
+  firefox-with-extensions =
+    let
+      nur = (inputs.nurpkgs.overlays.default pkgs pkgs).nur;
+
+      webapp = nix-webapp-lib.mkFirefoxApp {
+        url = "about:addons";
+        name = "webapp";
+        prefs = {
+          "extensions.htmlaboutaddons.recommendations.enabled" = false;
+          "extensions.ui.lastCategory" = "addons://list/extension";
+        };
+        extensions = [ nur.repos.rycee.firefox-addons.ublock-origin ];
+      };
+    in
+    pkgs.testers.runNixOSTest {
+      name = "run-firefox-webapp-extensions";
+      nodes.machine.imports = [ "${inputs.nixpkgs}/nixos/tests/common/x11.nix" ];
+      enableOCR = true;
+
+      testScript = ''
+        machine.wait_for_x()
+        machine.execute("xterm -e '${pkgs.lib.getExe webapp}; sleep 20' >&2 &")
+        machine.wait_for_window("Add-ons Manager", 20)
+        machine.screenshot("webapp")
+        assert "uBlock Origin" in machine.get_screen_text_variants()[0]
+      '';
+    };
 }

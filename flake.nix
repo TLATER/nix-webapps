@@ -1,7 +1,12 @@
 {
   description = "Browser-based webapps using nix";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs = {
+    # Note that these are only used for tests, don't bother changing
+    # your `.follows` for this
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nurpkgs.url = "github:nix-community/NUR";
+  };
 
   outputs =
     { self, nixpkgs, ... }@inputs:
