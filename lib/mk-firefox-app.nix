@@ -2,15 +2,36 @@ pkgs:
 {
   url,
   name,
+  prefs ? { },
   extraArgs ? [ ],
   makeDesktopItemArgs ? { },
   firefoxBin ? pkgs.lib.getExe pkgs.firefox,
 }:
 
 let
+  prefsFile = pkgs.writeText "firefox-webapp-profile-${name}-prefs.js" (
+    "\n"
+    + pkgs.lib.concatMapAttrsStringSep "\n" (
+      pref: val: "user_pref(\"${pref}\", ${builtins.toJSON val}); "
+    ) prefs
+  );
+
+  combinedPrefs = pkgs.concatTextFile {
+    name = "firefox-webapp-profile-${name}-combined-prefs";
+    files = [
+      "${pkgs.quick-webapps.src}/data/runtime/firefox/profile/user.js"
+      prefsFile
+    ];
+    destination = "/user.js";
+  };
+
   profile = pkgs.buildEnv {
     name = "firefox-webapp-profile-${name}";
-    paths = [ "${pkgs.quick-webapps.src}/data/runtime/firefox/profile" ];
+    paths = [
+      combinedPrefs
+      "${pkgs.quick-webapps.src}/data/runtime/firefox/profile"
+    ];
+    ignoreCollisions = true;
   };
 
   binary = pkgs.writers.writeNuBin name {

@@ -42,4 +42,26 @@ in
         assert "test.htm" not in machine.get_screen_text_variants()[0]
       '';
     };
+
+  firefox-with-custom-prefs =
+    let
+      webapp = nix-webapp-lib.mkFirefoxApp {
+        url = "file://${testPage}";
+        name = "webapp";
+        prefs = {
+          "app.shield.optoutstudies.enabled" = false;
+        };
+      };
+    in
+    pkgs.testers.runNixOSTest {
+      name = "run-firefox-webapp-custom-prefs";
+      nodes.machine.imports = [ "${inputs.nixpkgs}/nixos/tests/common/x11.nix" ];
+
+      testScript = ''
+        machine.wait_for_x()
+        machine.execute("xterm -e '${pkgs.lib.getExe webapp}; sleep 20' >&2 &")
+        machine.wait_for_window("Test Webapp", 20)
+        machine.succeed("grep app.shield.optoutstudies.enabled ~/.local/share/firefox-webapps/webapp/user.js")
+      '';
+    };
 }
