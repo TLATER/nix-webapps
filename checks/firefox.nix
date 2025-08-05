@@ -29,6 +29,7 @@ in
     pkgs.testers.runNixOSTest {
       name = "run-firefox-webapp";
       nodes.machine = mkTestMachine webapp;
+      passthru.testPackage = webapp;
       enableOCR = true;
 
       testScript = ''
@@ -61,6 +62,7 @@ in
     pkgs.testers.runNixOSTest {
       name = "run-firefox-webapp-custom-prefs";
       nodes.machine = mkTestMachine webapp;
+      passthru.testPackage = webapp;
 
       testScript = ''
         machine.wait_for_x()
@@ -87,6 +89,7 @@ in
     pkgs.testers.runNixOSTest {
       name = "run-firefox-webapp-extensions";
       nodes.machine = mkTestMachine webapp;
+      passthru.testPackage = webapp;
       enableOCR = true;
 
       testScript = ''
