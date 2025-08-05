@@ -12,12 +12,7 @@
     { self, nixpkgs, ... }@inputs:
     {
       overlays = {
-        default = final: prev: {
-          nix-webapp-lib = {
-            mkChromiumApp = import ./lib/mk-chromium-app.nix prev;
-            mkFirefoxApp = import ./lib/mk-firefox-app.nix prev;
-          };
-        };
+        default = import ./overlay.nix;
 
         # For backwards compatibility, since the overlay used to be
         # named literally "lib".
