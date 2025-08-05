@@ -105,3 +105,9 @@ demonstrated.
 Unfortunately getting Firefox to open links in your normal browser is
 not possible; copying links out is the best alternative. Alt+1-9 can
 be used to switch tabs even without the UI if you get stuck.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md)
+for hints on how the repository works, and what you should do to get
+patches approved.
