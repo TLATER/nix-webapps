@@ -1,4 +1,67 @@
 pkgs:
+/**
+  Builds a Firefox-based one-page webapp.
+
+  # Example
+
+  ```nix
+  mkFirefoxApp {
+    name = "discord";
+    url = "https://discord.com/app";
+
+    prefs = {
+      "extensions.htmlaboutaddons.recommendations.enabled" = false;
+    };
+
+    extensions = [ pkgs.nur.repos.rycee.firefox-addons.ublock-origin ];
+
+    makeDesktopItemArgs = {
+      comment = "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.";
+      genericName = "Internet Messenger";
+      categories = [
+        "Network"
+        "InstantMessaging"
+      ];
+    };
+  }
+  ```
+
+  # Type
+
+  ```
+  mkFirefoxApp :: AttrSet -> Derivation
+  ```
+
+  # Arguments
+
+  url
+  : The URL that will be opened in the browser as a webapp.
+
+  name
+  : The name of the webapp. This will be used to name the binary, and
+    will by default be capitalized and used as the name in the
+    `.desktop` file.
+
+  prefs
+  : Firefox user preferences to set. This matches the settings in the
+    `about:config` page.
+
+  extensions
+  : Firefox extensions to install. This expects Firefox addons packaged
+    as in [rycee's NUR
+    repo](https://nur.nix-community.org/repos/rycee/).
+
+  extraArgs
+  : Additional arguments to add to the Firefox CLI.
+
+  makeDesktopItemArgs
+  : Arguments to pass to the `makeDesktopItem` invocation.
+
+  firefoxBin
+  : The Firefox binary to use. This can be used to instead invoke the
+    webapp with e.g. librewolf. The browser used must be compatible with
+    Firefox profiles and its CLI interface for this to work.
+*/
 {
   url,
   name,
