@@ -75,8 +75,11 @@ pkgs:
 let
   prefsFile =
     let
-      prefs' =
-        prefs // pkgs.lib.optionalAttrs (extensions != [ ]) { "extensions.autoDisableScopes" = 0; };
+      prefs' = pkgs.lib.mergeAttrsList [
+        prefs
+        { "browser.startup.page" = 0; }
+        (pkgs.lib.optionalAttrs (extensions != [ ]) { "extensions.autoDisableScopes" = 0; })
+      ];
     in
     pkgs.writeText "firefox-webapp-profile-${name}-prefs.js" (
       "\n"
