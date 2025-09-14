@@ -1,6 +1,6 @@
 { inputs, pkgs }:
 let
-  inherit (inputs.self.overlays.default pkgs pkgs) nix-webapp-lib;
+  inherit (inputs.nix-webapps.overlays.default pkgs pkgs) nix-webapp-lib;
 
   mkTestMachine = webapp: {
     imports = [ "${inputs.nixpkgs}/nixos/tests/common/x11.nix" ];

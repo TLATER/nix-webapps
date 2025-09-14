@@ -19,9 +19,6 @@ as there is no standard output for exposing builder functions yet).
 Add to your flake inputs:
 
 ```nix
-# Note that overriding recursive inputs with `.follows` is not
-# necessary; this repository uses its inputs only for testing with
-# `checks`.
 nix-webapps.url = "github:TLATER/nix-webapps";
 ```
 

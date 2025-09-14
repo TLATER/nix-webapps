@@ -10,8 +10,8 @@ Please:
 
 ## Testing your changes
 
-The flake exposes a `checks` output, which runs the browsers in a VM
-and asserts things about the windows they open.
+The subflake in the `checks` directory contains `checks`, which run
+the browsers in a VM and asserts things about the windows they open.
 
 The [NixOS test
 infrastructure](https://nixos.org/manual/nixos/stable/#sec-nixos-tests)
@@ -32,11 +32,6 @@ Converting the result of that to a real test then just means writing a
 bit of Python. Here, still, the interactive python shell is very
 useful - you can simply run any commands you would expect to run in
 the test in your shell, and see what they do.
-
-Currently, only tests for `x86_64-linux` are exposed, because there
-should really be no meaningful changes between architectures for this
-and adding more platforms just adds boilerplate. Should you need to
-run tests on another architecture, feel free to add the boilerplate.
 
 ## Working on the builders
 
