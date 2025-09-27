@@ -4,10 +4,16 @@ let profile_path = [($env.XDG_DATA_HOME? | default ~/.local/share | path expand)
 mkdir $profile_path
 
 # Delete existing symlinks into the nix store; they may be stale, if
-# they are not, they will be immediately recreated in the next step
-glob ($profile_path + "/**/*") | each {|file|
-  if ($file | path type) == "symlink" and ($file | str starts-with "/nix/store") {
-    rm $file
+# they are not, they will be immediately recreated in the next step.
+let profile_files = try {
+  ls -l ($profile_path + "/**/*" | into glob)
+} catch {
+  []
+}
+
+$profile_files | each {|file|
+  if ($file.type == "symlink") and ($file.target | str starts-with "/nix/store") {
+    rm $file.name
   }
 }
 
