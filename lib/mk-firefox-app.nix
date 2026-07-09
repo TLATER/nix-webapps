@@ -122,7 +122,7 @@ let
 
   binary = pkgs.writers.writeNuBin name {
     makeWrapperArgs = [
-      "--prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.xorg.lndir ]}"
+      "--prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.lndir ]}"
       "--set WEBAPP_EXE ${firefoxBin}"
       "--set WEBAPP_NAME ${name}"
       "--set WEBAPP_URL ${url}"
